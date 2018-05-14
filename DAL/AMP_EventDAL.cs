@@ -352,6 +352,7 @@ namespace DAL
                 {
                     strSQL += " and Event_Snapshot.Ev200_EVT_STATUS not in (" + rule.ShortLeadStatusList + ") ";
                 }
+                strSQL += " or Event_Snapshot.Ev200_EVT_STATUS is null";
 
 
                 SqlCommand comm = new SqlCommand(strSQL, conn);
