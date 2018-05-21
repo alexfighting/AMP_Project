@@ -359,7 +359,7 @@ namespace DAL
                 comm.Parameters.Add("@nsnapshotcurrentid", SqlDbType.Int).Value = nSnapshotCurrentID;
                 comm.Parameters.Add("@nsnapshotpreviousid", SqlDbType.Int).Value = nSnapshotPreviousID;
 
-                
+
                 comm.Parameters.Add("@eventid", SqlDbType.Int).Value = evt.EventId;
                 comm.CommandTimeout = nCommandTimeOut;
 
@@ -449,7 +449,6 @@ namespace DAL
                 strSQL += " (select EV200_ORG_CODE, EV200_EVT_ID, EV200_EVT_DESC, EV200_EVT_STATUS from EV200_EVENT_MASTER where EV200_SNAPSHOT_ID=@nsnapshotpreviousid AND EV200_EVT_ID=@eventid) As Event_Snapshot ";
                 strSQL += "  on Event_Snapshot.EV200_ORG_CODE=Event_Live.EV200_ORG_CODE and Event_Snapshot.EV200_EVT_ID = Event_Live.EV200_EVT_ID ";
                 strSQL += " where  Event_Snapshot.EV200_EVT_STATUS<>Event_Live.EV200_EVT_STATUS ";
-
 
                 if (!string.IsNullOrEmpty(rule.ShortLeadStatusList))
                 {

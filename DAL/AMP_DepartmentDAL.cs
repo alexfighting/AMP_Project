@@ -90,7 +90,7 @@ namespace DAL
                     if (dr["Noti_Dep_Code"] != DBNull.Value && (dr["Dep_User_Id"] != DBNull.Value || dr["EmailAddress"] != DBNull.Value))
                     {
                         dept.DepartmentCode = dr["Noti_Dep_Code"].ToString();
-                        dept.DepartmentDesc = dr["Noti_Dep_Desc"] ==DBNull.Value?"": dr["Noti_Dep_Desc"].ToString();
+                        dept.DepartmentDesc = dr["Noti_Dep_Desc"] == DBNull.Value ? "" : dr["Noti_Dep_Desc"].ToString();
                         dept.NotifiMethod = dr["Noti_Method"].ToString();
                         dept.UserId = dr["Dep_User_Id"].ToString();
                         dept.EmailAddress = dr["EmailAddress"].ToString();

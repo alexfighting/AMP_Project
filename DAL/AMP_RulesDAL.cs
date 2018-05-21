@@ -16,7 +16,7 @@ namespace DAL
         public static string strEmailTo = Properties.Settings.Default.Amendment_Error_EmailAddressTo;
         public static int nCommandTimeOut = Properties.Settings.Default.nCommandTimeOut;
 
-        public static AMP_Rules rule = new AMP_Rules();     
+        public static AMP_Rules rule = new AMP_Rules();
 
         public static DateTime dtSnapshotCurrent, dtSnapshotPrevious;
 
@@ -89,7 +89,7 @@ namespace DAL
                         }
                         rule.ShowSpaceCode = false;
                         if (dr["ShowSpaceCode"] != DBNull.Value)
-                        {                            
+                        {
                             bool isShowSpaceCode = false;
                             if (bool.TryParse(dr["ShowSpaceCode"].ToString(), out isShowSpaceCode))
                             {
@@ -100,7 +100,7 @@ namespace DAL
 
                         rule.ShowHierarchyFuncDesc = false;
                         if (dr["ShowHierarchyFuncDesc"] != DBNull.Value)
-                        {                        
+                        {
                             bool isShowHierarchyFuncDesc = false;
                             if (bool.TryParse(dr["ShowHierarchyFuncDesc"].ToString(), out isShowHierarchyFuncDesc))
                             {
@@ -134,7 +134,7 @@ namespace DAL
 
                         rule.NotesLength = 200;
                         if (dr["NotesLength"] != DBNull.Value)
-                        {                            
+                        {
                             int nNotesLength = 200;
                             if (int.TryParse(dr["NotesLength"].ToString(), out nNotesLength))
                             {
@@ -244,7 +244,7 @@ namespace DAL
                         }
                     }
 
-                    
+
                     rule.ShowPackageItemDateTime = false;
 
                     if (dr["ShowPackageItemDateTime"] != DBNull.Value)
@@ -268,7 +268,7 @@ namespace DAL
                             if (isShowFuncSignage) rule.ShowFunctionSignageChange = true;
                         }
                     }
-                    
+
                     rule.NotesLength = 200;
                     if (dr["NotesLength"] != DBNull.Value)
                     {
@@ -291,7 +291,7 @@ namespace DAL
                 conn.Close();
             }
             return rule;
-        }  
+        }
 
         public static void UpdateNextRun()
         {

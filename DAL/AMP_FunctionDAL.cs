@@ -55,7 +55,7 @@ namespace DAL
                     }
                     else
                     {
-                        strDesc = GetFuncHierarchyDescFromPrd(nEventId, int.Parse(dr["EV700_PARENT_FUNC_ID"].ToString())) +" -> "+ dr["EV700_FUNC_DESC"].ToString();
+                        strDesc = GetFuncHierarchyDescFromPrd(nEventId, int.Parse(dr["EV700_PARENT_FUNC_ID"].ToString())) + " -> " + dr["EV700_FUNC_DESC"].ToString();
                     }
                 }
             }
@@ -69,7 +69,7 @@ namespace DAL
             }
 
             return strDesc;
-        }     
+        }
 
         public static string GetFuncDesc(int nEventId, int nFuncId, int nSnapshotId)
         {
@@ -197,16 +197,16 @@ namespace DAL
                 SqlCommand comm = new SqlCommand("get_function_changes", conn);
                 comm.CommandType = CommandType.StoredProcedure;
                 comm.Parameters.Add("@eventid", SqlDbType.Int).Value = evt.EventId;
-                comm.Parameters.Add("@departmentcode", SqlDbType.VarChar,20).Value =  dep.DepartmentCode;
+                comm.Parameters.Add("@departmentcode", SqlDbType.VarChar, 20).Value = dep.DepartmentCode;
                 comm.Parameters.Add("@checksignage", SqlDbType.Bit).Value = rule.ShowFunctionSignageChange;
-                
+
                 comm.CommandTimeout = nCommandTimeOut;
-                
+
 
                 SqlDataAdapter da = new SqlDataAdapter(comm);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-              
+
                 if (dt.Rows.Count > 0)
                 {
                     //check for each exist func data
@@ -221,7 +221,7 @@ namespace DAL
                         }
                         Function_Info FuncInfo = GetFuncInfoFromSnapshot(nFuncId, evt.EventId, nSnapshotCurrentID);
 
-                        FuncInfo.isFunctionChange = Convert.ToBoolean(dr["func_change"]==DBNull.Value?0: dr["func_change"]);
+                        FuncInfo.isFunctionChange = Convert.ToBoolean(dr["func_change"] == DBNull.Value ? 0 : dr["func_change"]);
                         FuncInfo.isFunctionNotesChange = Convert.ToBoolean(dr["func_notes_change"] == DBNull.Value ? 0 : dr["func_notes_change"]);
                         FuncInfo.isFunctionSignageChange = Convert.ToBoolean(dr["func_signage_change"] == DBNull.Value ? 0 : dr["func_signage_change"]);
                         FuncInfo.isOrdersChange = Convert.ToBoolean(dr["func_order_change"] == DBNull.Value ? 0 : dr["func_order_change"]);
@@ -253,7 +253,7 @@ namespace DAL
 
             try
             {
-                conn.Open();                  
+                conn.Open();
                 string strSQL = "SELECT distinct  EV700_FUNC_ID as Function_Id, EV700_FUNC_TYPE as FunctionType FROM EV700_FUNC_MASTER_Curr  ";
                 strSQL += " INNER JOIN AMP_Noti_FuncTypeDep on EV700_FUNC_TYPE=AMP_Noti_FuncTypeDep.FuncType and AMP_Noti_FuncTypeDep.Dept_Code=@departmentcode ";
                 strSQL += " WHERE EV700_EVT_ID=@eventid ";
@@ -344,7 +344,7 @@ namespace DAL
                     eMsg.MSGText = "Function: " + finfo.FuncDesc;
                     eMsg.MSGHTML = "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'> Function:</span>&nbsp;" + finfo.FuncDesc;
                 }
-            }            
+            }
 
             if (rule.ShowFuncId)
             {
@@ -596,16 +596,16 @@ namespace DAL
                                 if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                                 {
                                     eMsg.MSGText += "Update To : " + dr["CC025_Live_NOTE_TEXT"].ToString() + "\r\n";
-                                    eMsg.MSGHTML += "Update To :" + dr["CC025_Live_HTML_TEXT"].ToString() + "<br/>";                                    
+                                    eMsg.MSGHTML += "Update To :" + dr["CC025_Live_HTML_TEXT"].ToString() + "<br/>";
                                 }
                                 else
                                 {
                                     eMsg.MSGText += "Update To : " + dr["CC025_Live_NOTE_TEXT"].ToString().Substring(0, rule.NotesLength - 3) + " ...r\n";
                                     eMsg.MSGHTML += "Update To :" + dr["CC025_Live_NOTE_TEXT"].ToString().Substring(0, rule.NotesLength - 3) + " ...< br/>";
-                                    
+
                                 }
                                 if (dr["CC025_Snapshot_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
-                                {                                    
+                                {
                                     eMsg.MSGText += "from: " + dr["CC025_Snapshot_NOTE_TEXT"].ToString() + "\r\n";
                                     eMsg.MSGHTML += "from:<strike>" + dr["CC025_Snapshot_HTML_TEXT"].ToString() + "</strike>";
                                 }
@@ -766,7 +766,7 @@ namespace DAL
             try
             {
                 conn.Open();
-                                
+
                 string strSQLDelOrd = "select  STUFF((select  ER101_DESC  ";
                 strSQLDelOrd += " from ER101_ACCT_ORDER_DTL_Prev dtl inner join AMP_Noti_ResDep dep on dtl.ER101_NEW_RES_TYPE=dep.New_Res_Type and dtl.ER101_RES_CODE=dep.Res_Code ";
                 strSQLDelOrd += " where dep.Noti_Dep_Code=@deptcode and ER101_EVT_ID=@eventid and ER101_FUNC_ID=@funcid ";
@@ -804,7 +804,7 @@ namespace DAL
             finally
             {
                 conn.Close();
-            }            
+            }
         }
     }
 }

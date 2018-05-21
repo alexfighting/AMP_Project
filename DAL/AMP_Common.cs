@@ -11,7 +11,7 @@ namespace DAL
     public class AMP_Common
     {
         //connection string
-        public static string strEBMSConn = Properties.Settings.Default.strEBMSConn;        
+        public static string strEBMSConn = Properties.Settings.Default.strEBMSConn;
         //current live database name
         public static string strCompDatabase = Properties.Settings.Default.strCompDatabase;
         public static string strEmailFrom = Properties.Settings.Default.Amendment_Error_EmailAddressFrom;
@@ -82,7 +82,7 @@ namespace DAL
 
             return strSpaceDesc;
         }
-        
+
         public static string GetAcctCode(int nEventId)
         {
             string strAcctCode = "";
@@ -114,7 +114,7 @@ namespace DAL
 
             return strAcctCode;
         }
-        
+
         public static string GetUserName(string strUserId)
         {
             string strUserName = "";
@@ -178,7 +178,7 @@ namespace DAL
 
             return strDoc_HDG_Desc;
         }
-        
+
         public static DateTime getRecentSnapshotDateTime(DateTime dtDateTime)
         {
             DateTime dt = new DateTime();
@@ -286,7 +286,7 @@ namespace DAL
             string strBody = "";
             strBody = "There's error with function " + strFunctionName + ". <br/><br/>  Error Messages:<br/> " + ex.Message;
 
-           AMP_Notification.sendEmail(strEmailFrom, strEmailTo, strSubject, strBody);
+            AMP_Notification.sendEmail(strEmailFrom, strEmailTo, strSubject, strBody);
         }
 
         public static void sendErrorException(string strEmailFrom, string strEmailTo, string strSubject, AMP_Rules rule, EventInfo evt, Function_Info finfo, Notification_Dep_user dep, int nPrevSnapshotId, int nCurrSnapshotId, string strFunctionName, string logText)
@@ -322,7 +322,7 @@ namespace DAL
                 comm.Parameters.Add("@numberoffunc", SqlDbType.Int).Value = nFuncNumbsers;
                 comm.Parameters.Add("@startdatetime", SqlDbType.DateTime).Value = dtStart;
                 comm.Parameters.Add("@enddatetime", SqlDbType.DateTime).Value = dtEnd;
-                
+
                 comm.Parameters.Add("@runningminutes", SqlDbType.Int).Value = int.Parse((dtEnd - dtStart).TotalSeconds.ToString("R"));
                 comm.CommandTimeout = nCommandTimeOut;
 
@@ -340,7 +340,7 @@ namespace DAL
 
         public static void SaveLog(string strRuleCode, string strRuleName, DateTime dtPrev, DateTime dtCurr, string strDeptCode, int nRecords, string strFunctionName, string strUserId, string strEmailAddress, string logText)
         {
-            
+
             SqlConnection conn = new SqlConnection(strEBMSConn);
 
             try
@@ -453,6 +453,41 @@ namespace DAL
             InsertCurrentDocument(nCurrSnapshotId, lstEvent);
             InsertPrevDocument(nPrevSnapshotId, lstEvent);
         }
+
+        public static bool isSnapshotFinished(DateTime dtCurrent)
+        {
+            bool isFinished = false;
+
+            SqlConnection conn = new SqlConnection(strEBMSConn);
+
+            try
+            {
+                conn.Open();
+
+                string strSQL = "select top 1 SnapshotStatus as SnapshotStatus from SnapshotTimes where datediff(second,  SnapshotDateTime,  @currentdatetime) >0 order by SnapshotDateTime desc ";
+                SqlCommand comm = new SqlCommand(strSQL, conn);
+                comm.Parameters.Add("@currentdatetime", SqlDbType.DateTime).Value = dtCurrent;
+
+                comm.CommandTimeout = nCommandTimeOut;
+
+                SqlDataReader dr = comm.ExecuteReader();
+                if (dr.Read())
+                {
+                    isFinished = Convert.ToBoolean(dr["SnapshotStatus"] == DBNull.Value ? 0 : dr["SnapshotStatus"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                sendException(ex, System.Reflection.MethodBase.GetCurrentMethod().Name, strEmailFrom, strEmailTo, ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return isFinished;
+        }
+
 
         #region initCompareTables
 
@@ -701,7 +736,7 @@ namespace DAL
             {
                 conn.Close();
             }
-        }        
+        }
 
         private static void InsertCurrOrder(int nSnapshotID, List<EventInfo> lstEvent)
         {

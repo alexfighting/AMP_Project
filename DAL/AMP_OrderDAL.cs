@@ -31,7 +31,7 @@ namespace DAL
         public static Order_Info oinfo;
 
         public static EventAccountMessage eMsg;
-        
+
         public static List<Order_Info> getCurrentFunctionOrders()
         {
             List<Order_Info> lstOrders = new List<Order_Info>();
@@ -81,7 +81,7 @@ namespace DAL
         public static Order_Info getOrderInformation(int nOrderNumber, int nSnapshotId)
         {
             Order_Info order = new Order_Info();
-            
+
             SqlConnection conn = new SqlConnection(strEBMSConn);
 
             try
@@ -93,7 +93,7 @@ namespace DAL
                 strSQL += "where ER100_EVT_ID=@eventid and ER100_FUNC_ID=@funcid and ER100_ORD_NBR=@ordnbr and ER100_SNAPSHOT_ID=@snapshotid";
 
                 SqlCommand comm = new SqlCommand(strSQL, conn);
-                
+
                 comm.Parameters.Add("@eventid", SqlDbType.Int).Value = evt.EventId;
                 comm.Parameters.Add("@funcid", SqlDbType.Int).Value = finfo.FuncId;
                 comm.Parameters.Add("@ordnbr", SqlDbType.Int).Value = nOrderNumber;
@@ -107,7 +107,7 @@ namespace DAL
                     order.EventId = evt.EventId;
                     order.FuncId = finfo.FuncId;
                     order.Order_Number = nOrderNumber;
-                    order.BoothNumber = dr["ER100_BOOTH_NBR"].ToString();                    
+                    order.BoothNumber = dr["ER100_BOOTH_NBR"].ToString();
                 }
                 else
                 {
@@ -165,12 +165,12 @@ namespace DAL
                 {
                     eMsg.MSGText = "Order:" + oinfo.Order_Number.ToString();
                     eMsg.MSGHTML = "<DIV style='FONT-FAMILY:Arial;padding-left:40px;FONT-SIZE:10pt;'><span style='font: bold 10pt arial;'>Order: " + oinfo.Order_Number + "</span> </div>";
-                }                
+                }
             }
         }
-        
+
         public static void checkOrderChange()
-        {            
+        {
             SqlConnection conn = new SqlConnection(strEBMSConn);
 
             try
@@ -181,7 +181,7 @@ namespace DAL
                 strSQL += " Ord_Current.ER100_ORD_ACCT as CurrOrdAcct, Ord_Prev.ER100_ORD_ACCT as PrevOrdAcct FROM ";
                 strSQL += " (SELECT distinct ER100_ORD_NBR,ER100_BOOTH_NBR,ER100_ORD_ACCT from ER100_ACCT_ORDER_Curr where ER100_EVT_ID=@eventid and ER100_FUNC_ID=@funcid and ER100_ORD_NBR=@ordnbr) AS Ord_Current ";
                 strSQL += " Left JOIN  ";
-                strSQL += " (SELECT distinct ER100_ORD_NBR,ER100_BOOTH_NBR,ER100_ORD_ACCT from ER100_ACCT_ORDER_Prev where ER100_EVT_ID=@eventid and ER100_FUNC_ID=@funcid and ER100_ORD_NBR=@ordnbr) AS Ord_Prev on Ord_Current.ER100_ORD_NBR=Ord_Prev.ER100_ORD_NBR";                
+                strSQL += " (SELECT distinct ER100_ORD_NBR,ER100_BOOTH_NBR,ER100_ORD_ACCT from ER100_ACCT_ORDER_Prev where ER100_EVT_ID=@eventid and ER100_FUNC_ID=@funcid and ER100_ORD_NBR=@ordnbr) AS Ord_Prev on Ord_Current.ER100_ORD_NBR=Ord_Prev.ER100_ORD_NBR";
 
                 SqlCommand comm = new SqlCommand(strSQL, conn);
                 comm.Parameters.Add("@eventid", SqlDbType.Int).Value = evt.EventId;
@@ -210,7 +210,7 @@ namespace DAL
 
                             if (dr["CurrBoothNbr"].ToString() == "" && dr["PrevBoothNbr"].ToString() != "")
                             {
-                                eMsg.MSGText += "Order booth number is removed from " + dr["PrevBoothNbr"].ToString() + " for " + AMP_Common.GetAcctName(dr["PrevOrdAcct"].ToString()) +  "\r\n";
+                                eMsg.MSGText += "Order booth number is removed from " + dr["PrevBoothNbr"].ToString() + " for " + AMP_Common.GetAcctName(dr["PrevOrdAcct"].ToString()) + "\r\n";
                                 eMsg.MSGHTML += "<DIV style='FONT-FAMILY:Arial;padding-left:45px;FONT-SIZE:10pt;'><p style='margin: 0 0 10px 0;text-align: left;'>Order booth number is updated to " + dr["CurrBoothNbr"].ToString() + " from <strike>" + dr["PrevBoothNbr"].ToString() + "</strike> </p></div>";
                             }
                             else if (dr["CurrBoothNbr"].ToString() != "" && dr["PrevBoothNbr"].ToString() == "")
@@ -234,7 +234,7 @@ namespace DAL
             finally
             {
                 conn.Close();
-            }            
+            }
         }
 
         public static void checkOrderNotesChange()
@@ -264,7 +264,7 @@ namespace DAL
                 strSQL += " WHERE (CC025_Live.CC025_NOTE_CODE is null or CC025_Snapshot.CC025_NOTE_CODE is null OR CC025_Live.CC025_NOTE_TEXT<>CC025_Snapshot.CC025_NOTE_TEXT) ";
                 strSQL += " ) AS NOTE_DIFF ";
                 strSQL += " INNER JOIN AMP_Noti_NoteClassDep on Note_Class=CC025_NOTE_CLASS and Noti_Dept_Code=@deptcode ";
-                
+
                 SqlCommand comm = new SqlCommand(strSQL, conn);
                 comm.Parameters.Add("@eventid", SqlDbType.Int).Value = evt.EventId;
                 comm.Parameters.Add("@deptcode", SqlDbType.VarChar, 20).Value = dep.DepartmentCode;
@@ -298,7 +298,7 @@ namespace DAL
                             eMsg.MSGText += "New Order " + dr["CC025_NOTE_DESC"].ToString() + " Notes entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + "\r\n";
                             eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;padding-left:45px;'>New Order Notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " </p>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
-                            if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength )
+                            if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                             {
                                 eMsg.MSGText += dr["CC025_Live_NOTE_TEXT"].ToString() + "\r\n";
                                 eMsg.MSGHTML += dr["CC025_Live_HTML_TEXT"].ToString();
@@ -335,19 +335,19 @@ namespace DAL
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                             if (dr["CC025_Live_NOTE_TEXT"] != DBNull.Value && dr["CC025_Snapshot_NOTE_TEXT"] != DBNull.Value)
                             {
-                                if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength )
+                                if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                                 {
-                                    eMsg.MSGText += "Update To : " + dr["CC025_Live_NOTE_TEXT"].ToString() + "\r\n";                                    
-                                    eMsg.MSGHTML += "Update To :" + dr["CC025_Live_HTML_TEXT"].ToString() + "<br/>";                                    
+                                    eMsg.MSGText += "Update To : " + dr["CC025_Live_NOTE_TEXT"].ToString() + "\r\n";
+                                    eMsg.MSGHTML += "Update To :" + dr["CC025_Live_HTML_TEXT"].ToString() + "<br/>";
                                 }
                                 else
                                 {
                                     eMsg.MSGText += "Update To : " + dr["CC025_Live_NOTE_TEXT"].ToString().Substring(0, rule.NotesLength - 3) + " ...r\n";
                                     eMsg.MSGHTML += "Update To :" + dr["CC025_Live_HTML_TEXT"].ToString().Substring(0, rule.NotesLength - 3) + " ...< br/>";
-                                    
+
                                 }
 
-                                if (dr["CC025_Snapshot_NOTE_TEXT"].ToString().Length <= rule.NotesLength )
+                                if (dr["CC025_Snapshot_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                                 {
                                     eMsg.MSGText += "from:" + dr["CC025_Snapshot_NOTE_TEXT"].ToString() + "\r\n";
                                     eMsg.MSGHTML += "from:<strke>" + dr["CC025_Snapshot_HTML_TEXT"].ToString() + "</strke><br/>";
@@ -365,13 +365,13 @@ namespace DAL
             }
             catch (Exception ex)
             {
-                AMP_Common.sendErrorException(strEmailFrom, strEmailTo, "Amendment Runtime Error - Order", rule, evt, finfo, dep, nSnapshotPreviousID, nSnapshotCurrentID, System.Reflection.MethodBase.GetCurrentMethod().Name, "Order Number:" + oinfo.Order_Number + "<br/>" + ex.Message);                
+                AMP_Common.sendErrorException(strEmailFrom, strEmailTo, "Amendment Runtime Error - Order", rule, evt, finfo, dep, nSnapshotPreviousID, nSnapshotCurrentID, System.Reflection.MethodBase.GetCurrentMethod().Name, "Order Number:" + oinfo.Order_Number + "<br/>" + ex.Message);
             }
             finally
             {
                 conn.Close();
             }
-            
+
         }
 
         public static void checkOrderItemChange()
@@ -499,7 +499,7 @@ namespace DAL
                 da.FillSchema(dt, SchemaType.Source);
 
                 if (dt.Rows.Count > 0)
-                { 
+                {
                     foreach (DataRow dr in dt.Rows)
                     {
                         if (!string.IsNullOrEmpty(dr["MSGText"].ToString()))
@@ -523,7 +523,7 @@ namespace DAL
             finally
             {
                 conn.Close();
-            }            
+            }
         }
 
         public static void checkOrderItemNotesChange()
@@ -555,7 +555,7 @@ namespace DAL
                 strSQL += " ) AS NOTE_DIFF ";
                 strSQL += " INNER JOIN AMP_Noti_NoteClassDep on Note_Class=CC025_NOTE_CLASS and Noti_Dept_Code=@deptcode ";
                 strSQL += " INNER JOIN (SELECT ER101_ORD_NBR,ER101_ORD_LINE,ER101_DESC,ER101_RES_QTY,ER101_START_DATE_ISO,ER101_START_TIME_ISO,ER101_END_DATE_ISO,ER101_END_TIME_ISO,ER101_NEW_RES_TYPE,ER101_RES_CODE,ER101_UOM,ER101_PHASE FROM ER101_ACCT_ORDER_DTL_Curr where ER101_EVT_ID=@eventid) AS Order_Current  ";
-                strSQL += " ON Order_Current.ER101_ORD_NBR = CC025_ORDER and Order_Current.ER101_ORD_LINE=CC025_ORD_LINE ";                
+                strSQL += " ON Order_Current.ER101_ORD_NBR = CC025_ORDER and Order_Current.ER101_ORD_LINE=CC025_ORD_LINE ";
 
                 SqlCommand comm = new SqlCommand(strSQL, conn);
                 comm.Parameters.Add("@eventid", SqlDbType.Int).Value = evt.EventId;
@@ -569,8 +569,8 @@ namespace DAL
                 da.FillSchema(dt, SchemaType.Source);
 
                 if (dt.Rows.Count > 0)
-                {          
-                    
+                {
+
                     if (oinfo.Order_Number == 899032)
                     {
                         string strA = "test";
@@ -595,7 +595,7 @@ namespace DAL
                             eMsg.MSGText += "New Order Item Notes (" + dr["CC025_NOTE_DESC"].ToString() + ") entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " for order item: " + dr["ER101_DESC"].ToString() + ": \r\n";
                             eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial; padding-left:50px;'>New order item notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " for: " + dr["ER101_DESC"].ToString() + ": </p>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
-                            if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength )
+                            if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                             {
                                 eMsg.MSGText += dr["CC025_Live_NOTE_TEXT"].ToString() + "\r\n";
                                 eMsg.MSGHTML += dr["CC025_Live_HTML_TEXT"].ToString();
@@ -701,7 +701,7 @@ namespace DAL
                         int nOrderNumber;
                         if (int.TryParse(dr["ER100_ORD_NBR"].ToString(), out nOrderNumber)) nOrderNumber = int.Parse(dr["ER100_ORD_NBR"].ToString());
 
-                        Order_Info order = getOrderInformation(nOrderNumber,nSnapshotPreviousID);
+                        Order_Info order = getOrderInformation(nOrderNumber, nSnapshotPreviousID);
                         order.ChangeType = "Delete";
                         lstOrders.Add(order);
                     }
@@ -797,7 +797,7 @@ namespace DAL
             finally
             {
                 conn.Close();
-            }            
+            }
         }
     }
 }

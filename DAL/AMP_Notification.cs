@@ -27,9 +27,9 @@ namespace DAL
 
 
         public static void SendMSG()
-        {           
+        {
             if (ReadyMSG.dept.NotifiMethod == "Email" && !string.IsNullOrEmpty(ReadyMSG.dept.EmailAddress))
-            {                
+            {
                 SaveHistory();
                 sendMsg_via_Email();
             }
@@ -39,7 +39,7 @@ namespace DAL
                 SaveHistory();
             }
             if (ReadyMSG.dept.NotifiMethod == "Both" && !string.IsNullOrEmpty(ReadyMSG.dept.EmailAddress) && !string.IsNullOrEmpty(ReadyMSG.dept.UserId))
-            {                
+            {
                 saveToActivity();
                 SaveHistory();
                 sendMsg_via_Email();
@@ -70,7 +70,7 @@ namespace DAL
             client.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
             client.Send(mail);
         }
-     
+
 
         public static void saveToActivity()
         {
@@ -110,13 +110,13 @@ namespace DAL
                     comm.Parameters.Add("@DiaryText", SqlDbType.VarChar).Value = ReadyMSG.emsg.MSGText;
                     //comm.Parameters.Add("@DiaryText", SqlDbType.Text).Value = "Event Amendments";                                     
                     comm.Parameters.Add("@UserId", SqlDbType.VarChar, 8).Value = ReadyMSG.dept.UserId;
-                    comm.Parameters.Add("@amendmenttype", SqlDbType.VarChar, 3).Value = ReadyMSG.emsg.MessageType;                    
+                    comm.Parameters.Add("@amendmenttype", SqlDbType.VarChar, 3).Value = ReadyMSG.emsg.MessageType;
                     comm.Parameters.Add("@DiaryEventId", SqlDbType.Int).Value = ReadyMSG.emsg.EventId;
                     comm.Parameters.Add("@DiaryFuncId", SqlDbType.Int).Value = ReadyMSG.emsg.FuncId;
                     comm.Parameters.Add("@DiaryHTMLText", SqlDbType.VarChar).Value = ReadyMSG.emsg.MSGHTML;
                     comm.CommandTimeout = nCommandTimeOut;
 
-                    comm.ExecuteNonQuery();                    
+                    comm.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
@@ -126,7 +126,7 @@ namespace DAL
                 {
                     conn.Close();
                 }
-            }        
+            }
         }
 
         public static void SaveHistory()
@@ -183,7 +183,7 @@ namespace DAL
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message, ex);
-                }                
+                }
             }
         }
     }

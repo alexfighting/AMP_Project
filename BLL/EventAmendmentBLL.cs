@@ -18,44 +18,68 @@ namespace BLL
 
             dtSnapshotPrevious = AMP_Common.getSnapshotDateTimeFromId(nPrevSnapshotId);
             dtSnapshotCurrent = AMP_Common.getSnapshotDateTimeFromId(nCurrSnapshotId);
-			DateTime dtNow = DateTime.Now;							  
+            DateTime dtNow = DateTime.Now;
 
-            AMP_Rules common_rule = AMP_RulesDAL.getCommonEventRule();
+            int nTryTimes = 0;
+            bool isSnapshotFinish = false;
+            isSnapshotFinish = AMP_Common.isSnapshotFinished(dtNow);
 
-            AMP_EventDAL.dep = dep;
-            AMP_EventDAL.rule = common_rule;
-            AMP_RulesDAL.rule = common_rule;
-            AMP_FunctionDAL.rule = common_rule;
-            AMP_OrderDAL.rule = common_rule;
-
-            AMP_EventDAL.dtSnapshotCurrent = dtSnapshotCurrent;
-            AMP_EventDAL.dtSnapshotPrevious = dtSnapshotPrevious;
-
-            AMP_EventDAL.nSnapshotCurrentID = nCurrSnapshotId;
-            AMP_EventDAL.nSnapshotPreviousID = nPrevSnapshotId;
-            
-            AMP_RulesDAL.nSnapshotCurrentID = nCurrSnapshotId;
-            AMP_RulesDAL.nSnapshotPreviousID = nPrevSnapshotId;
-
-            AMP_RulesDAL.dtSnapshotCurrent = dtSnapshotCurrent;
-            AMP_RulesDAL.dtSnapshotPrevious = dtSnapshotPrevious;
-
-            List<EventInfo> lstEvent = new List<EventInfo>();
-
-            if (strEventCode == "All")
+            while (!isSnapshotFinish)
             {
-                lstEvent = AMP_EventDAL.getAllEventsFromRule();
+                //delay for 30 seconds then get the status again.
+                System.Threading.Thread.Sleep(1000 * 30);
+
+
+                isSnapshotFinish = AMP_Common.isSnapshotFinished(dtNow);
+                nTryTimes += 1;
+
+                //if tried for 40 times (20 minutes) still fail, then fail.
+                if (nTryTimes >= 40) break;
+            }
+
+            if (isSnapshotFinish)
+            {
+                AMP_Rules common_rule = AMP_RulesDAL.getCommonEventRule();
+
+                AMP_EventDAL.dep = dep;
+                AMP_EventDAL.rule = common_rule;
+                AMP_RulesDAL.rule = common_rule;
+                AMP_FunctionDAL.rule = common_rule;
+                AMP_OrderDAL.rule = common_rule;
+
+                AMP_EventDAL.dtSnapshotCurrent = dtSnapshotCurrent;
+                AMP_EventDAL.dtSnapshotPrevious = dtSnapshotPrevious;
+
+                AMP_EventDAL.nSnapshotCurrentID = nCurrSnapshotId;
+                AMP_EventDAL.nSnapshotPreviousID = nPrevSnapshotId;
+
+                AMP_RulesDAL.nSnapshotCurrentID = nCurrSnapshotId;
+                AMP_RulesDAL.nSnapshotPreviousID = nPrevSnapshotId;
+
+                AMP_RulesDAL.dtSnapshotCurrent = dtSnapshotCurrent;
+                AMP_RulesDAL.dtSnapshotPrevious = dtSnapshotPrevious;
+
+                List<EventInfo> lstEvent = new List<EventInfo>();
+
+                if (strEventCode == "All")
+                {
+                    lstEvent = AMP_EventDAL.getAllEventsFromRule();
+                }
+                else
+                {
+                    EventInfo evt = AMP_EventDAL.getEventInfo(int.Parse(strEventCode));
+                    lstEvent.Add(evt);
+                }
+
+                CheckEvent_Amendment(lstEvent, dep, nCurrSnapshotId, nPrevSnapshotId);
+                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds), " seconds. Start at:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
             }
             else
             {
-                EventInfo evt = AMP_EventDAL.getEventInfo(int.Parse(strEventCode));
-                lstEvent.Add(evt);
+                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "Snapshot is hanging the process. Start from:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"), "Tried very hard for 4 times, the process of snapshot is still not finished yet. I gave up. You can you do it, no can no bibi.");
             }
-
-            CheckEvent_Amendment(lstEvent, dep, nCurrSnapshotId, nPrevSnapshotId);            
-			AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds), " seconds. Start at:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"));																																																																		   
-
         }
+
 
         /// <summary>
         /// checkamendment for all departments, all events, all functions and orders, all notes, all documents.
@@ -67,72 +91,98 @@ namespace BLL
 
             DateTime dtNow = DateTime.Now;
 
-            //loop 1, list all the departments need to run amendments.
+            //loop 0, check if the current snapshot is finished.
 
-            List<Notification_Dep_user> lstUser = AMP_DepartmentDAL.getDepartments();
+            int nTryTimes = 0;
+            bool isSnapshotFinish = false;
+            isSnapshotFinish = AMP_Common.isSnapshotFinished(dtNow);
 
-            foreach (Notification_Dep_user dep in lstUser)
+            while (!isSnapshotFinish)
             {
-                AMP_EventDAL.dep = dep;
+                //delay for 30 seconds then get the status again.
+                System.Threading.Thread.Sleep(1000 * 30);
 
-                int nSnapshotCurrent, nSnapshotPrevious;
-                DateTime dtSnapshotCurrent, dtSnapshotPrevious;
 
-                //loop 2, list all rules for this department. rule is defined to run hourly/daily/... with different event filters. this is trying to shrink the message numbers send to user.
+                isSnapshotFinish = AMP_Common.isSnapshotFinished(dtNow);
+                nTryTimes += 1;
 
-                List<AMP_Rules> lstrules = AMP_RulesDAL.getEventRules(dep.DepartmentCode, dtNow);
+                //if tried for 40 times (20 minutes) still fail, then fail.
+                if (nTryTimes >= 40) break;
+            }
 
-                foreach (AMP_Rules rule in lstrules)
+            if (isSnapshotFinish)
+            {
+                //loop 1, list all the departments need to run amendments.
+
+                List<Notification_Dep_user> lstUser = AMP_DepartmentDAL.getDepartments();
+
+                foreach (Notification_Dep_user dep in lstUser)
                 {
-                    if (rule.RuleId != null)
+                    AMP_EventDAL.dep = dep;
+
+                    int nSnapshotCurrent, nSnapshotPrevious;
+                    DateTime dtSnapshotCurrent, dtSnapshotPrevious;
+
+                    //loop 2, list all rules for this department. rule is defined to run hourly/daily/... with different event filters. this is trying to shrink the message numbers send to user.
+
+                    List<AMP_Rules> lstrules = AMP_RulesDAL.getEventRules(dep.DepartmentCode, dtNow);
+
+                    foreach (AMP_Rules rule in lstrules)
                     {
-                        AMP_EventDAL.rule = rule;
-                        AMP_RulesDAL.rule = rule;
-                        AMP_FunctionDAL.rule = rule;
-                        AMP_OrderDAL.rule = rule;
-
-                        if (rule.Last_Run != null && rule.Last_Run != DateTime.MinValue)
+                        if (rule.RuleId != null)
                         {
-                            nSnapshotCurrent = AMP_Common.getRecentSnapshotID(dtNow);
-                            nSnapshotPrevious = AMP_Common.getRecentSnapshotID(rule.Last_Run);
+                            AMP_EventDAL.rule = rule;
+                            AMP_RulesDAL.rule = rule;
+                            AMP_FunctionDAL.rule = rule;
+                            AMP_OrderDAL.rule = rule;
 
-                            dtSnapshotCurrent = AMP_Common.getRecentSnapshotDateTime(dtNow);
-                            dtSnapshotPrevious = AMP_Common.getRecentSnapshotDateTime(rule.Last_Run);
+                            if (rule.Last_Run != null && rule.Last_Run != DateTime.MinValue)
+                            {
+                                nSnapshotCurrent = AMP_Common.getRecentSnapshotID(dtNow);
+                                nSnapshotPrevious = AMP_Common.getRecentSnapshotID(rule.Last_Run);
 
+                                dtSnapshotCurrent = AMP_Common.getRecentSnapshotDateTime(dtNow);
+                                dtSnapshotPrevious = AMP_Common.getRecentSnapshotDateTime(rule.Last_Run);
+
+                            }
+                            else
+                            {
+                                nSnapshotCurrent = AMP_Common.getRecentSnapshotID(dtNow);
+                                nSnapshotPrevious = AMP_Common.getRecentSnapshotID(dtNow.AddMinutes(-rule.TriggerMinutes));
+
+                                dtSnapshotCurrent = AMP_Common.getRecentSnapshotDateTime(dtNow);
+                                dtSnapshotPrevious = AMP_Common.getRecentSnapshotDateTime(dtNow.AddMinutes(-rule.TriggerMinutes));
+                            }
+                            AMP_EventDAL.nSnapshotCurrentID = nSnapshotCurrent;
+                            AMP_EventDAL.nSnapshotPreviousID = nSnapshotPrevious;
+
+                            AMP_EventDAL.dtSnapshotCurrent = dtSnapshotCurrent;
+                            AMP_EventDAL.dtSnapshotPrevious = dtSnapshotPrevious;
+
+                            AMP_RulesDAL.nSnapshotCurrentID = nSnapshotCurrent;
+                            AMP_RulesDAL.nSnapshotPreviousID = nSnapshotPrevious;
+
+                            AMP_RulesDAL.dtSnapshotCurrent = dtSnapshotCurrent;
+                            AMP_RulesDAL.dtSnapshotPrevious = dtSnapshotPrevious;
+
+                            //get all event in the current department rule for 'EVENT', including cancelled, turnover
+                            List<EventInfo> lstEvent = AMP_EventDAL.getAllEventsFromRule();
+
+                            CheckEvent_Amendment(lstEvent, dep, nSnapshotCurrent, nSnapshotPrevious);
                         }
-                        else
-                        {
-                            nSnapshotCurrent = AMP_Common.getRecentSnapshotID(dtNow);
-                            nSnapshotPrevious = AMP_Common.getRecentSnapshotID(dtNow.AddMinutes(-rule.TriggerMinutes));
-
-                            dtSnapshotCurrent = AMP_Common.getRecentSnapshotDateTime(dtNow);
-                            dtSnapshotPrevious = AMP_Common.getRecentSnapshotDateTime(dtNow.AddMinutes(-rule.TriggerMinutes));
-                        }
-                        AMP_EventDAL.nSnapshotCurrentID = nSnapshotCurrent;
-                        AMP_EventDAL.nSnapshotPreviousID = nSnapshotPrevious;
-
-                        AMP_EventDAL.dtSnapshotCurrent = dtSnapshotCurrent;
-                        AMP_EventDAL.dtSnapshotPrevious = dtSnapshotPrevious;
-
-                        AMP_RulesDAL.nSnapshotCurrentID = nSnapshotCurrent;
-                        AMP_RulesDAL.nSnapshotPreviousID = nSnapshotPrevious;
-
-                        AMP_RulesDAL.dtSnapshotCurrent = dtSnapshotCurrent;
-                        AMP_RulesDAL.dtSnapshotPrevious = dtSnapshotPrevious;
-
-                        //get all event in the current department rule for 'EVENT', including cancelled, turnover
-                        List<EventInfo> lstEvent = AMP_EventDAL.getAllEventsFromRule();
-
-                        CheckEvent_Amendment(lstEvent, dep,  nSnapshotCurrent, nSnapshotPrevious);
+                        AMP_RulesDAL.UpdateNextRun();
                     }
-                    AMP_RulesDAL.UpdateNextRun();
-                }
-            }//end foreach rule
+                }//end foreach rule
 
-            if (dtNow.Year == 2018 && dtNow.Month<=5 )
+                if (dtNow.Year == 2018 && dtNow.Month <= 5)
+                {
+                    AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds.ToString("G")) + " seconds.", "Start at:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
+                }
+            }
+            else
             {
-                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds.ToString("G")) + " seconds.", "Start at:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
-            }           
+                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "Snapshot is hanging the process. Start from:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"), "Tried very hard for 4 times of checking, still not finish the snapshot process, I gave up. You can you do it, no can no bibi.");
+            }
         }
 
         private static void CheckEvent_Amendment(List<EventInfo> lstEvent, Notification_Dep_user dep, int nCurrSnapshotId, int nPrevSnapshotId)
@@ -147,7 +197,7 @@ namespace BLL
                     AMP_EventDAL.evt = evt;
                     AMP_EventDAL.eMsg = new EventAccountMessage();
 
-                    if (AMP_EventDAL.checkEventCancelled()) AMP_EventDAL.SendMSG();                    
+                    if (AMP_EventDAL.checkEventCancelled()) AMP_EventDAL.SendMSG();
                     else if (AMP_EventDAL.checkEventNewOrShortLead()) AMP_EventDAL.SendMSG();
                     else if (evt.Status != "80" && evt.Status != "86" && AMP_EventDAL.rule.ShortLeadStatusList.IndexOf(evt.Status.ToString()) > -1)
                     {
@@ -157,7 +207,7 @@ namespace BLL
                         AMP_EventDAL.checkEventNotesChange();
 
                         EventAccountMessage function_amendment = checkFunction_Amendment(evt, dep, nCurrSnapshotId, nPrevSnapshotId);
-                        
+
                         if (function_amendment.FuncUpdated)
                         {
                             AMP_EventDAL.eMsg.EventUpdated = true;
@@ -175,7 +225,7 @@ namespace BLL
         private static EventAccountMessage checkFunction_Amendment(EventInfo evt, Notification_Dep_user dep, int nCurrSnapshotId, int nPrevSnapshotId)
         {
             AMP_FunctionDAL.dep = dep;
-            AMP_FunctionDAL.evt = evt;            
+            AMP_FunctionDAL.evt = evt;
             AMP_FunctionDAL.nSnapshotCurrentID = nCurrSnapshotId;
             AMP_FunctionDAL.nSnapshotPreviousID = nPrevSnapshotId;
 
@@ -205,7 +255,7 @@ namespace BLL
                 {
                     order_amendment = checkOrder_Amendment(evt, function, dep, nCurrSnapshotId, nPrevSnapshotId);
                 }
-                    
+
 
                 if (AMP_FunctionDAL.eMsg.FuncUpdated || order_amendment.OrderUpdated)
                 {
@@ -246,24 +296,24 @@ namespace BLL
 
             EventAccountMessage order_amendment_msg = new EventAccountMessage();
 
-            List<Order_Info> lstCurrentOrders = AMP_OrderDAL.getCurrentFunctionOrders();           
+            List<Order_Info> lstCurrentOrders = AMP_OrderDAL.getCurrentFunctionOrders();
 
             foreach (Order_Info ord in lstCurrentOrders)
-            {              
+            {
                 AMP_OrderDAL.oinfo = ord;
 
                 AMP_OrderDAL.getOrderHeader();
 
                 if (finfo.isOrdersChange)
                     AMP_OrderDAL.checkOrderChange();
-                
+
                 if (finfo.isOrdersNotesChange)
                     AMP_OrderDAL.checkOrderNotesChange();
 
                 if (finfo.isOrderItemsChange)
                     AMP_OrderDAL.checkOrderItemChange();
-                
-                if(finfo.isOrderItemsNotesChange)
+
+                if (finfo.isOrderItemsNotesChange)
                     AMP_OrderDAL.checkOrderItemNotesChange();
 
                 if (AMP_OrderDAL.eMsg.OrderUpdated)
@@ -273,7 +323,7 @@ namespace BLL
                     order_amendment_msg.MSGHTML += AMP_OrderDAL.eMsg.MSGHTML;
                 }
             }
-            
+
             List<Order_Info> lstDelOrders = AMP_OrderDAL.getDeletedOrders();
 
             foreach (Order_Info delord in lstDelOrders)
