@@ -340,8 +340,21 @@ namespace DAL
 
                 //get the current event under the rule for New Event data.
                 string strSQL = "select Event_Live.EV200_EVT_ID AS EV200_EVT_ID,Event_Live.EV200_EVT_STATUS as StatusEnd,Event_Snapshot.EV200_EVT_STATUS as StatusStart, Datediff(D, getdate(), Event_Live.EV200_EVT_IN_DATE) as nDays  From ";
-                strSQL += " (select EV200_ORG_CODE, EV200_EVT_ID, EV200_EVT_DESC, EV200_EVT_STATUS,EV200_EVT_IN_DATE  from EV200_EVENT_MASTER where EV200_SNAPSHOT_ID=@nsnapshotcurrentid and EV200_EVT_ID=@eventid) As Event_Live LEFT JOIN ";
-                strSQL += " (select EV200_ORG_CODE, EV200_EVT_ID, EV200_EVT_DESC, EV200_EVT_STATUS from EV200_EVENT_MASTER where EV200_SNAPSHOT_ID=@nsnapshotpreviousid and EV200_EVT_ID=@eventid) As Event_Snapshot ";
+
+                strSQL += " (select EV200_ORG_CODE, EV200_EVT_ID, EV200_EVT_DESC, EV200_EVT_STATUS, EV200_EVT_IN_DATE from EV200_EVENT_MASTER where EV200_SNAPSHOT_ID=@nsnapshotcurrentid and EV200_EVT_ID=@eventid ";
+                if (rule.Notify_EventDay_From >= 0 && rule.Notify_EventDay_To > 0)
+                {
+                    strSQL += " and CAST(DATEADD(d,@notifyeventto, CAST(@snapshotcurrent as date)) AS DATE) >= CAST(EV200_EVT_IN_DATE AS DATE) AND CAST(DATEADD(D, @notifyeventfrom, CAST(@snapshotcurrent as date)) AS DATE) <= CAST(EV200_EVT_OUT_DATE AS DATE) ";
+                }
+                strSQL += ") As Event_Live LEFT JOIN ";
+                strSQL += " (select EV200_ORG_CODE, EV200_EVT_ID, EV200_EVT_DESC, EV200_EVT_STATUS, EV200_EVT_IN_DATE from EV200_EVENT_MASTER where EV200_SNAPSHOT_ID=@nsnapshotpreviousid and EV200_EVT_ID=@eventid ";
+                if (rule.Notify_EventDay_From >= 0 && rule.Notify_EventDay_To > 0)
+                {
+                    strSQL += " and CAST(DATEADD(d,@notifyeventto, CAST(@snapshotprevious as date)) AS DATE) >= CAST(EV200_EVT_IN_DATE AS DATE) AND CAST(DATEADD(D, @notifyeventfrom, CAST(@snapshotprevious as date)) AS DATE) <= CAST(EV200_EVT_OUT_DATE AS DATE) ";
+                }
+                strSQL += ") As Event_Snapshot ";
+
+                
                 strSQL += " on Event_Snapshot.EV200_ORG_CODE=Event_Live.EV200_ORG_CODE and Event_Snapshot.EV200_EVT_ID = Event_Live.EV200_EVT_ID ";
                 strSQL += " where  Event_Snapshot.EV200_EVT_STATUS<>Event_Live.EV200_EVT_STATUS  ";
                 if (!string.IsNullOrEmpty(rule.ShortLeadStatusList))
@@ -359,6 +372,13 @@ namespace DAL
                 comm.Parameters.Add("@nsnapshotcurrentid", SqlDbType.Int).Value = nSnapshotCurrentID;
                 comm.Parameters.Add("@nsnapshotpreviousid", SqlDbType.Int).Value = nSnapshotPreviousID;
 
+                if (rule.Notify_EventDay_From >= 0 && rule.Notify_EventDay_To > 0)
+                {
+                    comm.Parameters.Add("@snapshotcurrent", SqlDbType.Date).Value = dtSnapshotCurrent;
+                    comm.Parameters.Add("@snapshotprevious", SqlDbType.Date).Value = dtSnapshotPrevious;
+                    comm.Parameters.Add("@notifyeventto", SqlDbType.Int).Value = rule.Notify_EventDay_To;
+                    comm.Parameters.Add("@notifyeventfrom", SqlDbType.Int).Value = rule.Notify_EventDay_From;
+                }
 
                 comm.Parameters.Add("@eventid", SqlDbType.Int).Value = evt.EventId;
                 comm.CommandTimeout = nCommandTimeOut;
