@@ -356,17 +356,18 @@ namespace DAL
 
                 
                 strSQL += " on Event_Snapshot.EV200_ORG_CODE=Event_Live.EV200_ORG_CODE and Event_Snapshot.EV200_EVT_ID = Event_Live.EV200_EVT_ID ";
-                strSQL += " where  Event_Snapshot.EV200_EVT_STATUS<>Event_Live.EV200_EVT_STATUS  ";
+                strSQL += " where  1=1 ";
                 if (!string.IsNullOrEmpty(rule.ShortLeadStatusList))
                 {
                     strSQL += " and Event_Live.Ev200_EVT_STATUS in (" + rule.ShortLeadStatusList + ") ";
                 }
+                
+                strSQL += " and (Event_Snapshot.EV200_EVT_STATUS<>Event_Live.EV200_EVT_STATUS ";
                 if (!string.IsNullOrEmpty(rule.ShortLeadStatusList))
                 {
                     strSQL += " and Event_Snapshot.Ev200_EVT_STATUS not in (" + rule.ShortLeadStatusList + ") ";
                 }
-                strSQL += " or Event_Snapshot.Ev200_EVT_STATUS is null";
-
+                strSQL += " or Event_Snapshot.Ev200_EVT_STATUS is null)";
 
                 SqlCommand comm = new SqlCommand(strSQL, conn);
                 comm.Parameters.Add("@nsnapshotcurrentid", SqlDbType.Int).Value = nSnapshotCurrentID;
