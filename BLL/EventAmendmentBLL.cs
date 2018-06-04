@@ -72,11 +72,11 @@ namespace BLL
                 }
 
                 CheckEvent_Amendment(lstEvent, dep, nCurrSnapshotId, nPrevSnapshotId);
-                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds), " seconds. Start at:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
+                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds), " seconds. Start at:" + dtNow.ToString("dd/MM/yyyy HH:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
             }
             else
             {
-                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "Snapshot is hanging the process. Start from:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"), "Tried very hard for 4 times, the process of snapshot is still not finished yet. I gave up. You can you do it, no can no bibi.");
+                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "Snapshot is hanging the process. Start from:" + dtNow.ToString("dd/MM/yyyy HH:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"), "Tried very hard for 4 times, the process of snapshot is still not finished yet. I gave up. You can you do it, no can no bibi.");
             }
         }
 
@@ -176,12 +176,12 @@ namespace BLL
 
                 if (dtNow.Year == 2018 && dtNow.Month <= 5)
                 {
-                    AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds.ToString("G")) + " seconds.", "Start at:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
+                    AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "status of running for " + (DateTime.Now.Subtract(dtNow).TotalSeconds.ToString("G")) + " seconds.", "Start at:" + dtNow.ToString("dd/MM/yyyy HH:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
                 }
             }
             else
             {
-                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "Snapshot is hanging the process. Start from:" + dtNow.ToString("dd/MM/yyyy hh:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm"), "Tried very hard for 4 times of checking, still not finish the snapshot process, I gave up. You can you do it, no can no bibi.");
+                AMP_Notification.sendEmail("AMDRun@mcec.com.au", "azheng@mcec.com.au", "Snapshot is hanging the process. Start from:" + dtNow.ToString("dd/MM/yyyy HH:mm") + " finish at " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"), "Tried very hard for 4 times of checking, still not finish the snapshot process, I gave up. You can you do it, no can no bibi.");
             }
         }
 

@@ -47,10 +47,10 @@ namespace DAL
                 {
                     conn.Open();
 
-                    string strSQL = " SELECT EV200_EVENT_MASTER.EV200_EVT_DESC,EV200_EVT_Status, EV200_EVENT_MASTER.EV200_EVT_ID, CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_IN_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_IN_TIME AS DATE) AS DATETIME) AS EVT_IN_DATETIME, ";
-                    strSQL += " CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_OUT_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_OUT_TIME AS DATE) AS DATETIME) AS EVT_OUT_DATETIME, ";
-                    strSQL += " CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_START_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_START_TIME AS DATE) AS DATETIME) AS EVT_START_DATETIME, ";
-                    strSQL += " CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_END_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_END_TIME AS DATE) AS DATETIME) AS EVT_END_DATETIME, ";
+                    string strSQL = " SELECT EV200_EVENT_MASTER.EV200_EVT_DESC,EV200_EVT_Status, EV200_EVENT_MASTER.EV200_EVT_ID, CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_IN_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_IN_TIME AS TIME) AS DATETIME) AS EVT_IN_DATETIME, ";
+                    strSQL += " CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_OUT_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_OUT_TIME AS TIME) AS DATETIME) AS EVT_OUT_DATETIME, ";
+                    strSQL += " CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_START_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_START_TIME AS TIME) AS DATETIME) AS EVT_START_DATETIME, ";
+                    strSQL += " CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_END_DATE AS DATE) AS DATETIME) + CAST(CAST(EV200_EVENT_MASTER.EV200_EVT_END_TIME AS TIME) AS DATETIME) AS EVT_END_DATETIME, ";
                     strSQL += " EV870_ACCT_MASTER_SLSP.EV870_NAME AS SLSPNAME, EV870_ACCT_MASTER_EP.EV870_NAME AS EPNAME, ";
                     strSQL += " EV870_ACCT_MASTER_TP.EV870_NAME AS TPNAME, EV870_ACCT_MASTER_OM.EV870_NAME AS OMNAME ";
                     strSQL += " FROM  (((EV200_EVENT_MASTER EV200_EVENT_MASTER LEFT OUTER JOIN " + strCompDatabase + ".dbo.EV870_ACCT_MASTER EV870_ACCT_MASTER_SLSP ON (EV200_EVENT_MASTER.EV200_ORG_CODE=EV870_ACCT_MASTER_SLSP.EV870_ORG_CODE) AND (EV200_EVENT_MASTER.EV200_SLSPER=EV870_ACCT_MASTER_SLSP.EV870_ACCT_CODE)) ";
@@ -297,16 +297,16 @@ namespace DAL
                     eMsg.MessageType = "ACE";
 
                     eMsg.MSGText = "Released Event Cancelled " + evt.EventDesc + " (" + evt.EventId + ") \r\n";
-                    eMsg.MSGText += "Start/End Date: " + evt.StartDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy hh:mm") + "\r\n";
-                    eMsg.MSGText += "In/Out Date: " + evt.InDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy hh:mm") + "\r\n";
+                    eMsg.MSGText += "Start/End Date: " + evt.StartDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy HH:mm") + "\r\n";
+                    eMsg.MSGText += "In/Out Date: " + evt.InDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy HH:mm") + "\r\n";
                     eMsg.MSGText += "Sales Person: " + evt.SalesPerson + "\r\n";
                     eMsg.MSGText += "Event Planner: " + evt.EventPlanner + "\r\n";
                     eMsg.MSGText += "Technology Planner: " + evt.TechPlanner + "\r\n";
                     eMsg.MSGText += "Operation Manager: " + evt.OperationManager + "\r\n\r\n";
 
                     eMsg.MSGHTML = "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;color:red'>Released Event Cancellled </span>&nbsp;<br/>" + evt.EventDesc + " (" + evt.EventId + ")" + " </p>";
-                    eMsg.MSGHTML += "<p style='margin: 0 0 10px 0;text-align: left;'><span>Start/End Date:</span> " + evt.StartDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy hh:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
-                    eMsg.MSGHTML += "<span>In/Out Date:</span> " + evt.InDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy hh:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
+                    eMsg.MSGHTML += "<p style='margin: 0 0 10px 0;text-align: left;'><span>Start/End Date:</span> " + evt.StartDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy HH:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
+                    eMsg.MSGHTML += "<span>In/Out Date:</span> " + evt.InDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy HH:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
                     eMsg.MSGHTML += "<span>Sales Person:</span> " + evt.SalesPerson + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
                     eMsg.MSGHTML += "<span>Event Planner:</span> " + evt.EventPlanner + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
                     eMsg.MSGHTML += "<span>Technology Planner:</span> " + evt.TechPlanner + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
@@ -410,15 +410,15 @@ namespace DAL
                         eMsg.MSGHTML = "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>New Event Released </span>&nbsp;<br/>" + evt.EventDesc + " (" + evt.EventId + ")" + " </p>";
                     }
 
-                    eMsg.MSGText += "Start/End Date: " + evt.StartDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy hh:mm") + "\r\n";
-                    eMsg.MSGText += "In/Out Date: " + evt.InDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy hh:mm") + "\r\n";
+                    eMsg.MSGText += "Start/End Date: " + evt.StartDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy HH:mm") + "\r\n";
+                    eMsg.MSGText += "In/Out Date: " + evt.InDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy HH:mm") + "\r\n";
                     eMsg.MSGText += "Sales Person: " + evt.SalesPerson + "\r\n";
                     eMsg.MSGText += "Event Planner: " + evt.EventPlanner + "\r\n";
                     eMsg.MSGText += "Technology Planner: " + evt.TechPlanner + "\r\n";
                     eMsg.MSGText += "Operation Manager: " + evt.OperationManager + "\r\n\r\n";
 
-                    eMsg.MSGHTML += "<p style='margin: 0 0 10px 0;text-align: left;'><span>Start/End Date:</span> " + evt.StartDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy hh:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
-                    eMsg.MSGHTML += "<span>In/Out Date:</span> " + evt.InDate.ToString("dd/MM/yyyy hh:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy hh:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
+                    eMsg.MSGHTML += "<p style='margin: 0 0 10px 0;text-align: left;'><span>Start/End Date:</span> " + evt.StartDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.EndDate.ToString("dd/MM/yyyy HH:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
+                    eMsg.MSGHTML += "<span>In/Out Date:</span> " + evt.InDate.ToString("dd/MM/yyyy HH:mm") + " - " + evt.OutDate.ToString("dd/MM/yyyy HH:mm") + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
                     eMsg.MSGHTML += "<span>Sales Person:</span> " + evt.SalesPerson + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
                     eMsg.MSGHTML += "<span>Event Planner:</span> " + evt.EventPlanner + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
                     eMsg.MSGHTML += "<span>Technology Planner:</span> " + evt.TechPlanner + "</p><p style='margin: 0 0 10px 0;text-align: left;'> ";
@@ -596,14 +596,14 @@ namespace DAL
 
                         if (dtCStart != dtPStart || dtCEnd != dtPEnd)
                         {
-                            eMsg.MSGText += " Event Start/End Date Time changed from: " + dtPStart.ToString("dd/MM/yyyy hh:mm") + " - " + dtPEnd.ToString("dd/MM/yyyy hh:mm") + " to: " + dtCStart.ToString("dd/MM/yyyy hh:mm") + " - " + dtCEnd.ToString("dd/MM/yyyy hh:mm");
-                            eMsg.MSGHTML += "<li style=font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='FONT-SIZE:10pt;'>Start/End Date changed</span> to: " + dtCStart.ToString("dd/MM/yyyy hh:mm") + " - " + dtCEnd.ToString("dd/MM/yyyy hh:mm") + " from: " + dtPStart.ToString("dd/MM/yyyy hh:mm") + " - " + dtPEnd.ToString("dd/MM/yyyy hh:mm") + " </p></li>";
+                            eMsg.MSGText += " Event Start/End Date Time changed from: " + dtPStart.ToString("dd/MM/yyyy HH:mm") + " - " + dtPEnd.ToString("dd/MM/yyyy HH:mm") + " to: " + dtCStart.ToString("dd/MM/yyyy HH:mm") + " - " + dtCEnd.ToString("dd/MM/yyyy HH:mm");
+                            eMsg.MSGHTML += "<li style=font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='FONT-SIZE:10pt;'>Start/End Date changed</span> to: " + dtCStart.ToString("dd/MM/yyyy HH:mm") + " - " + dtCEnd.ToString("dd/MM/yyyy HH:mm") + " from: " + dtPStart.ToString("dd/MM/yyyy HH:mm") + " - " + dtPEnd.ToString("dd/MM/yyyy HH:mm") + " </p></li>";
                         }
 
                         if (dtCIn != dtPIn || dtCOut != dtPout)
                         {
-                            eMsg.MSGText += " Event In/Out Date Time changed from: " + dtPIn.ToString("dd/MM/yyyy hh:mm") + " - " + dtPout.ToString("dd/MM/yyyy hh:mm") + " to: " + dtCIn.ToString("dd/MM/yyyy hh:mm") + " - " + dtCOut.ToString("dd/MM/yyyy hh:mm");
-                            eMsg.MSGHTML += "<li style=font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='FONT-SIZE:10pt;'>In/Out Date changed</span> to: " + dtCIn.ToString("dd/MM/yyyy hh:mm") + " - " + dtCOut.ToString("dd/MM/yyyy hh:mm") + " from: " + dtPIn.ToString("dd/MM/yyyy hh:mm") + " - " + dtPout.ToString("dd/MM/yyyy hh:mm") + " </p></li>";
+                            eMsg.MSGText += " Event In/Out Date Time changed from: " + dtPIn.ToString("dd/MM/yyyy HH:mm") + " - " + dtPout.ToString("dd/MM/yyyy HH:mm") + " to: " + dtCIn.ToString("dd/MM/yyyy HH:mm") + " - " + dtCOut.ToString("dd/MM/yyyy HH:mm");
+                            eMsg.MSGHTML += "<li style=font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='FONT-SIZE:10pt;'>In/Out Date changed</span> to: " + dtCIn.ToString("dd/MM/yyyy HH:mm") + " - " + dtCOut.ToString("dd/MM/yyyy HH:mm") + " from: " + dtPIn.ToString("dd/MM/yyyy HH:mm") + " - " + dtPout.ToString("dd/MM/yyyy HH:mm") + " </p></li>";
                         }
                         if (drEvent["Live_EST_ATTEND"].ToString() != drEvent["Snapshot_EST_ATTEND"].ToString())
                         {
@@ -684,8 +684,8 @@ namespace DAL
                         //new note
                         if (dr["CC025_Snapshot_NOTE_TEXT"] == DBNull.Value)
                         {
-                            eMsg.MSGText += "New Event Notes entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + "\r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New Event Notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " </p>";
+                            eMsg.MSGText += "New Event Notes entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + "\r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New Event Notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " </p>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                             if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                             {
@@ -720,8 +720,8 @@ namespace DAL
                         }
                         else
                         {
-                            eMsg.MSGText += dr["CC025_NOTE_DESC"].ToString() + "Event Notes Updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " \r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Event Notes (" + dr["CC025_NOTE_DESC"].ToString() + ") Updated</span> by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " </p><p style='margin: 0 0 10px 0;text-align: left;'>";
+                            eMsg.MSGText += dr["CC025_NOTE_DESC"].ToString() + "Event Notes Updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " \r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Event Notes (" + dr["CC025_NOTE_DESC"].ToString() + ") Updated</span> by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " </p><p style='margin: 0 0 10px 0;text-align: left;'>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                             if (dr["CC025_Live_NOTE_TEXT"] != DBNull.Value && dr["CC025_Snapshot_NOTE_TEXT"] != DBNull.Value)
                             {
@@ -851,8 +851,8 @@ namespace DAL
                         //new document
                         if (dr["Snapshot_Doc_SEQ_KEY"] == DBNull.Value)
                         {
-                            eMsg.MSGText += "New document entered/updated by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " \r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New Document</span> entered/updated by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " </p>";
+                            eMsg.MSGText += "New document entered/updated by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " \r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New Document</span> entered/updated by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " </p>";
                         }
                         //deleted notes
                         else if (dr["LIVE_Doc_SEQ_KEY"] == DBNull.Value)
@@ -862,8 +862,8 @@ namespace DAL
                         }
                         else
                         {
-                            eMsg.MSGText += "Document Updated by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " \r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Document Updated</span> by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " </p>";
+                            eMsg.MSGText += "Document Updated by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " \r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Document Updated</span> by " + AMP_Common.GetUserName(dr["MM446_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " </p>";
                         }
                         eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                         eMsg.MSGText += "(" + strDocHeading + ")" + dr["MM446_DOC_DESC"].ToString() + " \r\n";

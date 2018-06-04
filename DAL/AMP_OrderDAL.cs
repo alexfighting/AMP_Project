@@ -295,8 +295,8 @@ namespace DAL
                         //new note
                         if (dr["CC025_Snapshot_NOTE_TEXT"] == DBNull.Value)
                         {
-                            eMsg.MSGText += "New Order " + dr["CC025_NOTE_DESC"].ToString() + " Notes entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + "\r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;padding-left:45px;'>New Order Notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " </p>";
+                            eMsg.MSGText += "New Order " + dr["CC025_NOTE_DESC"].ToString() + " Notes entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + "\r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;padding-left:45px;'>New Order Notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " </p>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                             if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                             {
@@ -330,8 +330,8 @@ namespace DAL
                         }
                         else
                         {
-                            eMsg.MSGText += "Order " + dr["CC025_NOTE_DESC"].ToString() + " Notes Updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " \r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;padding-left:45px;'>Order Notes (" + dr["CC025_NOTE_DESC"].ToString() + ") Updated</span> by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " </p>";
+                            eMsg.MSGText += "Order " + dr["CC025_NOTE_DESC"].ToString() + " Notes Updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " \r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;padding-left:45px;'>Order Notes (" + dr["CC025_NOTE_DESC"].ToString() + ") Updated</span> by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " </p>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                             if (dr["CC025_Live_NOTE_TEXT"] != DBNull.Value && dr["CC025_Snapshot_NOTE_TEXT"] != DBNull.Value)
                             {
@@ -592,8 +592,8 @@ namespace DAL
                         //new note
                         if (dr["CC025_Snapshot_NOTE_TEXT"] == DBNull.Value)
                         {
-                            eMsg.MSGText += "New Order Item Notes (" + dr["CC025_NOTE_DESC"].ToString() + ") entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " for order item: " + dr["ER101_DESC"].ToString() + ": \r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial; padding-left:50px;'>New order item notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " for: " + dr["ER101_DESC"].ToString() + ": </p>";
+                            eMsg.MSGText += "New Order Item Notes (" + dr["CC025_NOTE_DESC"].ToString() + ") entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " for order item: " + dr["ER101_DESC"].ToString() + ": \r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial; padding-left:50px;'>New order item notes (" + dr["CC025_NOTE_DESC"].ToString() + ")</span> entered/updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " for: " + dr["ER101_DESC"].ToString() + ": </p>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                             if (dr["CC025_Live_NOTE_TEXT"].ToString().Length <= rule.NotesLength)
                             {
@@ -627,8 +627,8 @@ namespace DAL
                         }
                         else
                         {
-                            eMsg.MSGText += "Order item " + dr["CC025_NOTE_DESC"].ToString() + " notes updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " for: " + dr["ER101_DESC"].ToString() + ": \r\n";
-                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;padding-left:50px;'>Order item notes (" + dr["CC025_NOTE_DESC"].ToString() + ") updated</span> by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy hh:mm") + " for: " + dr["ER101_DESC"].ToString() + "</p>";
+                            eMsg.MSGText += "Order item " + dr["CC025_NOTE_DESC"].ToString() + " notes updated by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " for: " + dr["ER101_DESC"].ToString() + ": \r\n";
+                            eMsg.MSGHTML += "<DIV style='font:10pt arial;'><p style='margin: 0 0 10px 0;text-align: left;'><span style='font: bold 10pt arial;padding-left:50px;'>Order item notes (" + dr["CC025_NOTE_DESC"].ToString() + ") updated</span> by " + AMP_Common.GetUserName(dr["CC025_UPD_USER_ID"].ToString()) + " on " + dtUpdDate.ToString("dd/MM/yyyy HH:mm") + " for: " + dr["ER101_DESC"].ToString() + "</p>";
                             eMsg.MSGHTML += "<ul style='MARGIN:0 0 10px 40px;LIST-STYLE-TYPE:disc;'><li style=font:10pt arial;'><p style='MARGIN:0 0 10px 0;TEXT-ALIGN:left;'>";
                             if (dr["CC025_Live_NOTE_TEXT"] != DBNull.Value && dr["CC025_Snapshot_NOTE_TEXT"] != DBNull.Value)
                             {
